@@ -1,5 +1,5 @@
 #Tabs
-Hi, one of the easiest ways to create tabs on pure JS.
+Hi, one of the easiest ways to create tabs on native JS.
 Classes need to be changed in the code. 
 
 Instead of the '.infoheader class', insert a wrapper for your tabs.
