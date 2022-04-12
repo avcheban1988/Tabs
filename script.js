@@ -38,6 +38,7 @@ window.addEventListener('DOMContentLoaded', function(){
         }
     })
 
+
 //timer
 let deadLine = '2023-03-26';
 
@@ -82,11 +83,27 @@ setClock('timer', deadLine)
 
 //modalWindow
 
-let more = document.querySelector('.more'),
-    overlay = document.querySelector('.overlay'),
-    close = document.querySelector('.popup-close');
 
+    let more = document.querySelector('.more'),
+        overlay = document.querySelector('.overlay'),
+        close = document.querySelector('.popup-close');
 
-    
+    function openModal1(){
+        overlay.style.display = 'block';
+        this.classList.add('more-splash');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal1() {
+        overlay.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    more.addEventListener('click', openModal1);
+    close.addEventListener('click', closeModal1);
+
+    let moreInTabs = document.querySelectorAll('.description-btn');
+    moreInTabs.forEach((button) => {
+        button.addEventListener('click', openModal1);
+      });
 });
 
