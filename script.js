@@ -104,6 +104,6 @@ setClock('timer', deadLine)
     let moreInTabs = document.querySelectorAll('.description-btn');
     moreInTabs.forEach((button) => {
         button.addEventListener('click', openModal1);
-      });
+    });
 });
 
