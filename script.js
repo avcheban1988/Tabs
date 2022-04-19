@@ -105,5 +105,152 @@ setClock('timer', deadLine)
     moreInTabs.forEach((button) => {
         button.addEventListener('click', openModal1);
     });
+
+
+
+    // Form
+    let message = {
+        loading: 'Загрузка',
+        success: 'Успешно, скоромы в Вами свяжемся',
+        failure: 'Что-то пошло не так, смело звоните нам'
+    };
+    let form = document.querySelector('.main-form'),
+        input = form.getElementsByTagName('input'),
+        statusMessage = document.createElement('div');
+    statusMessage.classList.add('status');
+
+    form.addEventListener('submit', function (event){
+        event.preventDefault(); //страница не перезагружается при нажатии на кнопку
+        form.appendChild(statusMessage); //добавляем в форму наш div со статусом 'status'
+
+        let request = new XMLHttpRequest();
+        request.open('POST', 'server.php');
+        request.setRequestHeader ('Content-Type', 'application/x-www-form-urlencoded');
+
+        let formData = new FormData(form);
+        request.send(formData);
+        request.addEventListener('readystatechange', function() {
+            if (request.readyState < 4) {
+                statusMessage.innerHTML = message.loading;
+            } else if 
+                (request.readyState === 4 && request.status === 200) {
+                    statusMessage.innerHTML = message.success;
+                }
+            else {
+                statusMessage.innerHTML = message.failure;
+            }
+            for (let i = 0; i < input.length; i++) {
+                input[i].value = '';
+            }
+        
+        })
+    })
+
+    //slider
+
+
+    let slideIndex = 1,
+        slides = document.querySelectorAll('.slider-item'),
+        prev = document.querySelector('.prev'),
+        next = document.querySelector('.next'),
+        dotsWrap = document.querySelector('.slider-dots'),
+        dot = document.querySelectorAll('.dot'),
+        onclickDot = 0;
+
+    function showSlides(n) {
+        //добавляем проверку на то, вдруг это первый или последний слайд
+        if (n > slides.length) {
+            slideIndex = 1;//если слайды закончились в карусели, то возвращаемся к первому
+        }
+        if (n < 1) {
+            slideIndex = slides.length;//если меньше единицы, то уходим на последний слайд в карусели
+        }
+
+        slides.forEach((item) => item.style.display = 'none'); //скрыли все слайды
+        dot.forEach((elem) => elem.classList.remove('dot-active'));//скрыли активные точки
+        slides[slideIndex - 1].style.display = 'block';//первый слайд показали
+        dot[slideIndex - 1].classList.add('dot-active');//первая точка активная
+    }
+
+    showSlides(1); //показываем первый слайд и первую точки
+
+    function plusSlides(n) { //функция увеличения индекса слайда
+        showSlides (slideIndex += n);
+    }
+
+    function currentSlide(n) {
+        showSlides(slideIndex == n);
+    }
+
+    prev.addEventListener('click', function () { //вешаем на кнопки
+        plusSlides(-1);
+    })
+    next.addEventListener('click', function () {
+        plusSlides(1);
+    })
+
+    //dots
+
+    function clearDots() { //функция, чтоб стереть все точно
+        dot.forEach((elem) => elem.classList.remove('dot-active'));
+    }
+    function makeActiveDots() {
+        dot.forEach(function (elem, index) { //перебираем все точки
+            elem.addEventListener('click', evt => { //по клику на точку
+            clearDots()             //стираем активыне точки
+            onclickDot = index; //получаем индекс кликнутой точки
+            dot[onclickDot].classList.add('dot-active') //кликнутой точки задаем класс
+            slides.forEach((item) => item.style.display = 'none'); //прячем все слайды
+            slides[onclickDot].style.display = 'block'; //слайду, который соответствует индексу точки, делаем дисплей БЛОК
+            slideIndex = onclickDot + 1; //меняем индекс слайда, для актуального номера, при нажатии на кнопки
+                console.log(onclickDot);
+            })
+        })
+    }
+makeActiveDots()
+
+    //calc
+
+    let persons = document.querySelectorAll('.counter-block-input')[0],
+        restDays = document.querySelectorAll('.counter-block-input')[1],
+        place = document.getElementById('select'),
+        totalValue = document.getElementById('total'),
+        personsSum = 0,
+        daysSum = 0,
+        total = 0;
+
+    totalValue.innerHTML = '0';
+
+    persons.addEventListener('input', function () {
+        personsSum = this.value
+        total = (parseInt(daysSum) + parseInt(personsSum)) * 4000
+        if (restDays.value == '' || persons.value == '') {
+            totalValue.innerHTML = '0';
+
+        }   else {
+            totalValue.innerHTML = total;
+        }
+
+    })
+    restDays.addEventListener('input', function () {
+        daysSum = this.value
+        total = (parseInt(daysSum) + parseInt(personsSum)) * 4000
+        if (persons.value == '' || restDays.value == '') {
+            totalValue.innerHTML = '0';
+
+        }   else {
+            totalValue.innerHTML = total
+        }
+    })
+
+    place.addEventListener('change', function () {
+    if ((persons.value == '') || (restDays.value == '')) {
+        totalValue.innerHTML = '0';
+    }
+    else {
+        let a = total;
+        totalValue.innerHTML = a * this.options[this.selectedIndex].value;
+    }
+    });
 });
 
