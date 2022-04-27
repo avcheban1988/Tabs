@@ -1,16 +1,16 @@
-window.addEventListener('DOMContentLoaded', function(){
+window.addEventListener('DOMContentLoaded', function () {
     'use strict';
-    
-    
-    
-    
-//tabs
+
+
+
+
+    //tabs
     let tab = document.querySelectorAll('.info-header-tab'),
         info = document.querySelector('.info-header'),
         tabcontent = document.querySelectorAll('.info-tabcontent');
 
     function hideTabContent(a) {
-        for (let i = a; i < tabcontent.length; i++){
+        for (let i = a; i < tabcontent.length; i++) {
             tabcontent[i].classList.remove('show');
             tabcontent[i].classList.add('hide');
         }
@@ -27,7 +27,7 @@ window.addEventListener('DOMContentLoaded', function(){
     info.addEventListener('click', function (event) {
         let target = event.target;
         console.log(target)
-        if (target.classList.contains('info-header-tab')){
+        if (target.classList.contains('info-header-tab')) {
             for (let i = 0; i < tab.length; i++) {
                 if (target == tab[i]) {
                     hideTabContent(0); /*скрывает все табы*/
@@ -39,60 +39,61 @@ window.addEventListener('DOMContentLoaded', function(){
     })
 
 
-//timer
-let deadLine = '2023-03-26';
+    //timer
+    let deadLine = '2023-03-26';
 
-function getTimeRamaining(endtime) {
-    let t = Date.parse(endtime) - Date.parse(new Date()),
-        seconds = Math.floor((t/1000) % 60),
-        minutes = Math.floor((t/1000/60) % 60),
-        hours = Math.floor(t/(1000*60*60));
+    function getTimeRamaining(endtime) {
+        let t = Date.parse(endtime) - Date.parse(new Date()),
+            seconds = Math.floor((t / 1000) % 60),
+            minutes = Math.floor((t / 1000 / 60) % 60),
+            hours = Math.floor(t / (1000 * 60 * 60));
         return {
             'total': t,
             'hours': hours,
             'minutes': minutes,
             'seconds': seconds
         };
-}
+    }
 
-function setClock(id, endtime) {
-    let timer = document.getElementById(id),
-        hours = timer.querySelector('.hours'),
-        minutes = timer.querySelector('.minutes'),
-        seconds = timer.querySelector('.seconds'),
-        timeInterval = setInterval(updateClock, 1000);
+    function setClock(id, endtime) {
+        let timer = document.getElementById(id),
+            hours = timer.querySelector('.hours'),
+            minutes = timer.querySelector('.minutes'),
+            seconds = timer.querySelector('.seconds'),
+            timeInterval = setInterval(updateClock, 1000);
 
-        if (getTimeRamaining(endtime).total <= 0) {  //проверка на то, что время вышло, чтоб назад не шло
+        if (getTimeRamaining(endtime).total <= 0) { //проверка на то, что время вышло, чтоб назад не шло
             clearInterval(timeInterval);
             hours.textContent = '00';
             minutes.textContent = '00';
             seconds.textContent = '00';
         }
-    
-    function updateClock(){
-        let t = getTimeRamaining(endtime);
-        hours.textContent = t.hours;
-        minutes.textContent = t.minutes;
-        seconds.textContent = t.seconds;
-        if (t.total < 0) {
-            clearInterval(timeInterval);
+
+        function updateClock() {
+            let t = getTimeRamaining(endtime);
+            hours.textContent = t.hours;
+            minutes.textContent = t.minutes;
+            seconds.textContent = t.seconds;
+            if (t.total < 0) {
+                clearInterval(timeInterval);
+            }
         }
     }
-}
-setClock('timer', deadLine)
+    setClock('timer', deadLine)
 
-//modalWindow
+    //modalWindow
 
 
     let more = document.querySelector('.more'),
         overlay = document.querySelector('.overlay'),
         close = document.querySelector('.popup-close');
 
-    function openModal1(){
+    function openModal1() {
         overlay.style.display = 'block';
         this.classList.add('more-splash');
         document.body.style.overflow = 'hidden';
     }
+
     function closeModal1() {
         overlay.style.display = 'none';
         document.body.style.overflow = '';
@@ -119,30 +120,28 @@ setClock('timer', deadLine)
         statusMessage = document.createElement('div');
     statusMessage.classList.add('status');
 
-    form.addEventListener('submit', function (event){
+    form.addEventListener('submit', function (event) {
         event.preventDefault(); //страница не перезагружается при нажатии на кнопку
         form.appendChild(statusMessage); //добавляем в форму наш div со статусом 'status'
 
         let request = new XMLHttpRequest();
         request.open('POST', 'server.php');
-        request.setRequestHeader ('Content-Type', 'application/x-www-form-urlencoded');
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
         let formData = new FormData(form);
         request.send(formData);
-        request.addEventListener('readystatechange', function() {
+        request.addEventListener('readystatechange', function () {
             if (request.readyState < 4) {
                 statusMessage.innerHTML = message.loading;
-            } else if 
-                (request.readyState === 4 && request.status === 200) {
-                    statusMessage.innerHTML = message.success;
-                }
-            else {
+            } else if (request.readyState === 4 && request.status === 200) {
+                statusMessage.innerHTML = message.success;
+            } else {
                 statusMessage.innerHTML = message.failure;
             }
             for (let i = 0; i < input.length; i++) {
                 input[i].value = '';
             }
-        
+
         })
     })
 
@@ -160,22 +159,22 @@ setClock('timer', deadLine)
     function showSlides(n) {
         //добавляем проверку на то, вдруг это первый или последний слайд
         if (n > slides.length) {
-            slideIndex = 1;//если слайды закончились в карусели, то возвращаемся к первому
+            slideIndex = 1; //если слайды закончились в карусели, то возвращаемся к первому
         }
         if (n < 1) {
-            slideIndex = slides.length;//если меньше единицы, то уходим на последний слайд в карусели
+            slideIndex = slides.length; //если меньше единицы, то уходим на последний слайд в карусели
         }
 
         slides.forEach((item) => item.style.display = 'none'); //скрыли все слайды
-        dot.forEach((elem) => elem.classList.remove('dot-active'));//скрыли активные точки
-        slides[slideIndex - 1].style.display = 'block';//первый слайд показали
-        dot[slideIndex - 1].classList.add('dot-active');//первая точка активная
+        dot.forEach((elem) => elem.classList.remove('dot-active')); //скрыли активные точки
+        slides[slideIndex - 1].style.display = 'block'; //первый слайд показали
+        dot[slideIndex - 1].classList.add('dot-active'); //первая точка активная
     }
 
     showSlides(1); //показываем первый слайд и первую точки
 
     function plusSlides(n) { //функция увеличения индекса слайда
-        showSlides (slideIndex += n);
+        showSlides(slideIndex += n);
     }
 
     function currentSlide(n) {
@@ -191,23 +190,24 @@ setClock('timer', deadLine)
 
     //dots
 
-    function clearDots() { //функция, чтоб стереть все точно
+    function clearDots() { //функция, чтоб стереть все точки
         dot.forEach((elem) => elem.classList.remove('dot-active'));
     }
+
     function makeActiveDots() {
         dot.forEach(function (elem, index) { //перебираем все точки
             elem.addEventListener('click', evt => { //по клику на точку
-            clearDots()             //стираем активыне точки
-            onclickDot = index; //получаем индекс кликнутой точки
-            dot[onclickDot].classList.add('dot-active') //кликнутой точки задаем класс
-            slides.forEach((item) => item.style.display = 'none'); //прячем все слайды
-            slides[onclickDot].style.display = 'block'; //слайду, который соответствует индексу точки, делаем дисплей БЛОК
-            slideIndex = onclickDot + 1; //меняем индекс слайда, для актуального номера, при нажатии на кнопки
+                clearDots() //стираем активыне точки
+                onclickDot = index; //получаем индекс кликнутой точки
+                dot[onclickDot].classList.add('dot-active') //кликнутой точки задаем класс
+                slides.forEach((item) => item.style.display = 'none'); //прячем все слайды
+                slides[onclickDot].style.display = 'block'; //слайду, который соответствует индексу точки, делаем дисплей БЛОК
+                slideIndex = onclickDot + 1; //меняем индекс слайда, для актуального номера, при нажатии на кнопки
                 console.log(onclickDot);
             })
         })
     }
-makeActiveDots()
+    makeActiveDots()
 
     //calc
 
@@ -227,7 +227,7 @@ makeActiveDots()
         if (restDays.value == '' || persons.value == '') {
             totalValue.innerHTML = '0';
 
-        }   else {
+        } else {
             totalValue.innerHTML = total;
         }
 
@@ -238,19 +238,17 @@ makeActiveDots()
         if (persons.value == '' || restDays.value == '') {
             totalValue.innerHTML = '0';
 
-        }   else {
+        } else {
             totalValue.innerHTML = total
         }
     })
 
     place.addEventListener('change', function () {
-    if ((persons.value == '') || (restDays.value == '')) {
-        totalValue.innerHTML = '0';
-    }
-    else {
-        let a = total;
-        totalValue.innerHTML = a * this.options[this.selectedIndex].value;
-    }
+        if ((persons.value == '') || (restDays.value == '')) {
+            totalValue.innerHTML = '0';
+        } else {
+            let a = total;
+            totalValue.innerHTML = a * this.options[this.selectedIndex].value;
+        }
     });
 });
-
